@@ -1,0 +1,33 @@
+name: Backup to Yandex Cloud
+on:
+  schedule:
+    - cron: "0 0 * * *"  # Run daily at midnight (UTC)
+  workflow_dispatch:    # Allow manual triggers
+
+jobs:
+  backup_repositories:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Install Yandex Cloud CLI
+        run: |
+          # Install Yandex Cloud CLI here
+
+      - name: Authenticate Yandex Cloud CLI
+        run: |
+          # Authenticate the Yandex Cloud CLI using service account credentials
+
+      - name: List Repositories
+        id: list_repos
+        run: |
+          repos=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/orgs/your_organization/repos" | jq -r '.[].name')
+          echo "::set-output name=repos::$repos"
+
+      - name: Backup Repositories
+        run: |
+          for repo in ${{ steps.list_repos.outputs.repos }}; do
+            echo "Backing up $repo..."
+            # Use Yandex.Cloud CLI to copy the repository data to Yandex Cloud storage
+          done

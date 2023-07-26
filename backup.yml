@@ -1,0 +1,61 @@
+name: Backup Workflow
+on:
+  push:
+    branches:
+      - main
+      - master
+env:
+  BUCKET: st-project-backups
+  TOKEN: t1.9euelZqOz5XOnYyJi5eSmJSYjMidku3rnpWalY_Jic6SnZfHmZHOjsnGz4_l8_cgQWpa-e9vICQa_t3z92BvZ1r5728gJBr-zef1656VmsaNyM_LiYmRnZWdnZSckpaQ7_zF656VmsaNyM_LiYmRnZWdnZSckpaQ.Yk85rDwyJuUFivbIPz-vnQbutA397vuvLc8Nx-GlIaF9qzGdjrKSNFki_YDAnrxqzjG1HsKfkxvJKWi4n8ADAw
+  ACCESS_KEY: YCAJEsOmAX1puTu5m0KLp_SeY
+  SECRET_KEY: YCMxOUrTBOr3BiRfJBFHIW-iM2684lqwvOyQBNJQ
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Archive repository
+        run: |
+          zip -r repository.zip .
+          
+      - name: Verify file existence
+        run: |
+          ls -al repository.zip
+          
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.5.2
+      
+      - name: Run Terraform
+        run: |
+          repository_name=$(basename -s .git `git rev-parse --show-toplevel`)
+          last_push_date=$(git log -1 --format=%cd --date=format:"%Y-%m-%d-%H-%M-%S")
+          repository_name="${repository_name}-${last_push_date}.zip"
+          echo 'terraform {
+            required_providers {
+              yandex = {
+                source  = "yandex-cloud/yandex"
+                version = "0.81.0"
+              }
+            }
+          }
+          
+          provider "yandex" {
+            token = "'${{ env.TOKEN }}'"
+          }
+          
+          resource "yandex_storage_object" "test-object" {
+            access_key = "'${{ env.ACCESS_KEY }}'"
+            secret_key = "'${{ env.SECRET_KEY }}'"
+            bucket     = "'${{ env.BUCKET }}'"
+            key        = "'${repository_name}'"
+            source     = "repository.zip"
+          }' > main.tf
+
+          terraform init
+          terraform apply -auto-approve
+

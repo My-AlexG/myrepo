@@ -1,0 +1,9 @@
+Добавить к репозиториям git workflow file по созданию бэкапа
+
+Нужно добавить к репозиториям в Sense-Capital workflow по созданию бэкапа репозитория если в нем появились изменения.
+
+Сейчас это реализовано как облачная функция в yandex, которая берет список репозиториев скачивает zip архив каждого и загружает в yandex bucket st-project-backups. Минус в том что если репозиторий достаточно большой (3ГБ например) то это работает медленно либо вообще с ошибками.
+
+Поэтому нужно создать workflow который имея непосредственный доступ к репозиторию создает его архив и загружает его в yandex bucket st-project-backups. К задаче прикреплен мой вариант скрипта. Единственное, что нужно доделать это переместить переменные env из скрипта в Actions secrets репозитория. Также я использовал teraform для загрузки репозитория в yandex bucket, если есть вариант получше, то можно переделать. 
+
+После всего нужно отключить (удалить) облачную функцию https://console.cloud.yandex.ru/folders/b1g283hnblgcvrgk6d53/functions/functions/d4e46j89atiimok70dii/overviewВот здесь можно посмотреть сколько ресурсов выделяется для работы github actions  для GitHub Team and GitHub Enterprise Cloud https://docs.github.com/en/actions/using-github-hosted-runners/using-larger-runners#machine-specs-for-larger-runnerss . По идее их должно хватать для создания архива даже если репозиторий весить 3ГБ.

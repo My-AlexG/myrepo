@@ -1,0 +1,6 @@
+keyId = "YCAJEsOmAX1puTu5m0KLp_SeY";
+secretKey = "YCMxOUrTBOr3BiRfJBFHIW-iM2684lqwvOyQBNJQ";
+backetName = "st-project-backups";
+token = t1.9euelZqOz5XOnYyJi5eSmJSYjMidku3rnpWalY_Jic6SnZfHmZHOjsnGz4_l8_cgQWpa-e9vICQa_t3z92BvZ1r5728gJBr-zef1656VmsaNyM_LiYmRnZWdnZSckpaQ7_zF656VmsaNyM_LiYmRnZWdnZSckpaQ.Yk85rDwyJuUFivbIPz-vnQbutA397vuvLc8Nx-GlIaF9qzGdjrKSNFki_YDAnrxqzjG1HsKfkxvJKWi4n8ADAw
+
+Это iam token и скорее всего его нужно заменить на токен для апи (сервисный)
